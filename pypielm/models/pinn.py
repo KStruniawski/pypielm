@@ -37,7 +37,7 @@ if TYPE_CHECKING:
 # Activation factory
 # ---------------------------------------------------------------------------
 
-_ACTIVATIONS: dict[str, type[nn.Module]] = {
+_ACTIVATIONS: dict[str, type[nn.Module] | None] = {
     "tanh": nn.Tanh,
     "relu": nn.ReLU,
     "sin": None,  # handled specially below
@@ -291,8 +291,10 @@ class _GradPINNBase(BasePIELM):
 
     # training bookkeeping
     _loss_history: list[float]
+    _net: nn.Module | None  # set lazily in subclass __init__ / fit()
 
     def _build_optimizer(self, lr: float, optimizer_name: str) -> torch.optim.Optimizer:
+        assert self._net is not None
         if optimizer_name == "lbfgs":
             return torch.optim.LBFGS(
                 self._net.parameters(),
@@ -321,6 +323,7 @@ class _GradPINNBase(BasePIELM):
         device: torch.device,
     ) -> None:
         """Core training loop (Adam or L-BFGS)."""
+        assert self._net is not None
         self._net.to(device=device, dtype=dtype)
         opt = self._build_optimizer(lr, optimizer_name)
         self._loss_history = []
@@ -328,18 +331,20 @@ class _GradPINNBase(BasePIELM):
         if optimizer_name == "lbfgs":
             # L-BFGS requires closure
             for _ in range(max_epochs):
-                def closure() -> Tensor:
+                def closure() -> float:
+                    net = self._net
+                    assert net is not None
                     opt.zero_grad()
                     loss, _ = _pinn_loss(
-                        self._net, dataset, pde_operator, bcs, ics,
+                        net, dataset, pde_operator, bcs, ics,
                         w_pde, w_bc, w_ic, dtype, device,
                     )
                     loss.backward()
-                    return loss
+                    return float(loss)
 
-                loss_val = opt.step(closure)
+                loss_val = opt.step(closure)  # type: ignore[arg-type]
                 self._loss_history.append(
-                    loss_val.item() if loss_val is not None else float("nan")
+                    float(loss_val) if loss_val is not None else float("nan")
                 )
         else:
             for _ in range(max_epochs):
@@ -353,6 +358,7 @@ class _GradPINNBase(BasePIELM):
                 self._loss_history.append(loss.item())
 
     def predict(self, X: Array) -> Tensor:
+        assert self._net is not None
         device = next(self._net.parameters()).device
         dtype = next(self._net.parameters()).dtype
         X_t = _ensure_tensor(X, dtype, device)
@@ -363,6 +369,7 @@ class _GradPINNBase(BasePIELM):
             return self._net(X_t)
 
     def score(self, X: Array, y: Array, metric: str = "relative_l2") -> float:
+        assert self._net is not None
         device = next(self._net.parameters()).device
         dtype = next(self._net.parameters()).dtype
         X_t = _ensure_tensor(X, dtype, device)
@@ -372,6 +379,7 @@ class _GradPINNBase(BasePIELM):
 
     def get_feature_matrix(self, X: Array) -> Tensor:
         """Return the last hidden-layer activations as the feature matrix."""
+        assert self._net is not None
         device = next(self._net.parameters()).device
         dtype = next(self._net.parameters()).dtype
         X_t = _ensure_tensor(X, dtype, device)
@@ -379,7 +387,7 @@ class _GradPINNBase(BasePIELM):
             X_t = X_t.unsqueeze(1)
         self._net.eval()
         # Walk up to the penultimate layer
-        layers = list(self._net.modules())
+        layers = list(self._net.modules())  # type: ignore[arg-type]
         # For MLP: collect all but last Linear
         linears = [m for m in layers if isinstance(m, nn.Linear)]
         if len(linears) < 2:
@@ -389,7 +397,7 @@ class _GradPINNBase(BasePIELM):
             h = X_t
             for m in self._net.children():
                 if hasattr(m, "__iter__"):
-                    sub = list(m)  # nn.Sequential
+                    sub = list(m)  # type: ignore[call-overload]  # m is nn.Sequential
                     for layer in sub[:-1]:
                         h = layer(h)
                 else:
@@ -663,11 +671,8 @@ class AdaptivePINN(VanillaPINN):
 
         # Evaluate PDE residual magnitude via autograd
         X_cand.requires_grad_(True)
+        assert self._net is not None
         self._net.eval()
-
-        class _AutoFM:
-            def __call__(self, X: Tensor) -> Tensor:
-                return self._net(X)  # not bound; use closure
 
         # Use the PINN's own network to evaluate the residual
         net = self._net
@@ -715,7 +720,7 @@ class AdaptivePINN(VanillaPINN):
         probs_np = probs.cpu().float().numpy()
         import numpy as np
         idx = np.random.choice(self.n_candidates, size=self.n_colloc, replace=False, p=probs_np)
-        X_new = X_cand[idx].detach()
+        X_new = X_cand[idx].detach()  # type: ignore[index]
 
         new_ds = copy.copy(dataset)
         object.__setattr__(new_ds, "X_colloc", X_new)
@@ -896,7 +901,7 @@ class _MuonOptimizer(torch.optim.Optimizer):
         return X
 
     @torch.no_grad()
-    def step(self, closure: Any = None) -> Tensor | None:
+    def step(self, closure: Any = None) -> float | None:
         loss = None
         if closure is not None:
             with torch.enable_grad():
@@ -929,7 +934,7 @@ class _MuonOptimizer(torch.optim.Optimizer):
                     # Bias and 1-D params: plain SGD step
                     p.data.add_(g.to(p.dtype), alpha=-lr)
 
-        return loss
+        return loss  # type: ignore[return-value]  # Tensor at runtime, declared float | None
 
 
 @register("muon_pinn")
@@ -963,6 +968,7 @@ class MuonPINN(VanillaPINN):
 
     def _build_optimizer(self, lr: float, optimizer_name: str) -> torch.optim.Optimizer:
         # Ignore optimizer_name — always use Muon
+        assert self._net is not None
         return _MuonOptimizer(
             self._net.parameters(),
             lr=lr,
@@ -1147,6 +1153,7 @@ class ResidualAdaptivePINN(_GradPINNBase):
             self.n_candidates, d, dtype=dtype, device=device
         )
 
+        assert self._net is not None
         net = self._net
 
         class _AutoFM:
@@ -1183,7 +1190,7 @@ class ResidualAdaptivePINN(_GradPINNBase):
                     lap = lap + self.d2(X, ax)
                 return lap
 
-        self._net.eval()
+        self._net.eval()  # _net is nn.Module (asserted above)
         # enable_grad: autograd operators (d2 via autograd.grad) need the
         # computational graph even during the RAR evaluation step.
         with torch.enable_grad():

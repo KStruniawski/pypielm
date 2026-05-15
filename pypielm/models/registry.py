@@ -7,7 +7,7 @@ and CLI commands can reference models by name without hardcoded imports.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
     from pypielm.core.base import BasePIELM
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 MODEL_REGISTRY: dict[str, type[BasePIELM]] = {}
 
 
-def register(name: str):
+def register(name: str) -> Callable[[type], type]:
     """Class decorator that registers a PIELM/PINN model under ``name``.
 
     Args:

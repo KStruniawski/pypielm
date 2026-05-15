@@ -7,7 +7,7 @@ for numerically stable PDE solves.
 
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import NamedTuple, cast
 
 import torch
 
@@ -84,8 +84,8 @@ def ridge_solve(
         A_cpu = A.cpu()
         b_cpu = Hty.cpu()
         result = torch.linalg.solve(A_cpu, b_cpu)
-        return result.to(device=H.device)
-    return torch.linalg.solve(A, Hty)
+        return cast(torch.Tensor, result.to(device=H.device))
+    return cast(torch.Tensor, torch.linalg.solve(A, Hty))
 
 
 def rrqr_solve(
@@ -111,7 +111,7 @@ def rrqr_solve(
     if tol is not None:
         kwargs["rcond"] = tol
     result = torch.linalg.lstsq(H, y, **kwargs)
-    return result.solution
+    return cast(torch.Tensor, result.solution)
 
 
 def bayesian_solve(
@@ -203,4 +203,4 @@ def tikhonov_solve(
     Hty = H.T @ y  # (H, out_dim)
     LtL = L.T @ L  # (H, H)
     reg = HtH + lam * LtL
-    return torch.linalg.solve(reg, Hty)
+    return cast(torch.Tensor, torch.linalg.solve(reg, Hty))

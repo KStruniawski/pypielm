@@ -71,6 +71,10 @@ class RandomFeatureMap(nn.Module):
         d2H = fm.d2(X, 0)    # ∂²H/∂x₀², shape (N, 200)
     """
 
+    # Buffer type annotations: register_buffer sets these as Tensors, not Modules
+    W: torch.Tensor
+    b: torch.Tensor
+
     def __init__(
         self,
         input_dim: int,
@@ -292,6 +296,11 @@ class FourierFeatureMap(nn.Module):
         dtype: Floating-point precision.
     """
 
+    # Buffer type annotations: register_buffer sets these as Tensors, not Modules
+    W: torch.Tensor
+    b: torch.Tensor
+    omega: torch.Tensor
+
     def __init__(
         self,
         input_dim: int,
@@ -459,6 +468,10 @@ class AutogradFeatureMap(nn.Module):
         device: Target device.
         dtype: Floating-point precision.
     """
+
+    # Buffer type annotations: register_buffer sets these as Tensors, not Modules
+    W: torch.Tensor
+    b: torch.Tensor
 
     def __init__(
         self,

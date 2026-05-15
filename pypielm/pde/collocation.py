@@ -10,7 +10,6 @@ Public API::
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass
 
 import torch
 
@@ -18,7 +17,6 @@ import torch
 # Domain descriptors
 # ---------------------------------------------------------------------------
 
-@dataclass
 class BoxDomain:
     """Axis-aligned bounding box in R^d.
 
@@ -31,12 +29,13 @@ class BoxDomain:
         domain = BoxDomain(lb=[0.0, 0.0], ub=[1.0, 1.0])
     """
 
-    lb: list[float] | torch.Tensor
-    ub: list[float] | torch.Tensor
-
-    def __post_init__(self) -> None:
-        self.lb = torch.as_tensor(self.lb, dtype=torch.float64)
-        self.ub = torch.as_tensor(self.ub, dtype=torch.float64)
+    def __init__(
+        self,
+        lb: list[float] | torch.Tensor,
+        ub: list[float] | torch.Tensor,
+    ) -> None:
+        self.lb: torch.Tensor = torch.as_tensor(lb, dtype=torch.float64)
+        self.ub: torch.Tensor = torch.as_tensor(ub, dtype=torch.float64)
 
     @property
     def dim(self) -> int:

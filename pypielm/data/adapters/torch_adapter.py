@@ -53,7 +53,7 @@ class TorchDatasetAdapter:
         xs: list[torch.Tensor] = []
         ys: list[torch.Tensor] = []
 
-        for item in self.dataset:
+        for item in self.dataset:  # type: ignore[attr-defined]
             if not (isinstance(item, (tuple, list)) and len(item) == 2):
                 raise ValueError(
                     "Each item from the dataset must be a (x, y) tuple."

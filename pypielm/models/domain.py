@@ -23,6 +23,7 @@ from pypielm.core.base import (
 from pypielm.models.registry import register
 
 if TYPE_CHECKING:
+    from pypielm.core.feature_maps import RandomFeatureMap
     from pypielm.data.dataset import PIELMDataset
 
 
@@ -91,7 +92,7 @@ class _DomainDecompositionBase(BasePIELM):
         self._local_seeds = local_seeds
         self._submodels: list[_SubdomainModel] = []
 
-    def _build_fm(self, input_dim: int, sub_seed: int):
+    def _build_fm(self, input_dim: int, sub_seed: int) -> RandomFeatureMap:
         from pypielm.core.feature_maps import RandomFeatureMap
         return RandomFeatureMap(
             input_dim=input_dim,
@@ -351,7 +352,7 @@ class DDELMCoarse(_DomainDecompositionBase):
             )
         return self
 
-    def _build_fm_coarse(self, input_dim: int):
+    def _build_fm_coarse(self, input_dim: int) -> RandomFeatureMap:
         from pypielm.core.feature_maps import RandomFeatureMap
         return RandomFeatureMap(
             input_dim=input_dim,

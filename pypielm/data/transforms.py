@@ -56,6 +56,7 @@ class Normalizer:
             raise RuntimeError("Call fit() before transform().")
         if X.ndim == 1:
             X = X.unsqueeze(1)
+        assert self._loc is not None and self._scale is not None
         return (X - self._loc.to(X.device)) / self._scale.to(X.device)
 
     def inverse_transform(self, X: torch.Tensor) -> torch.Tensor:
@@ -64,6 +65,7 @@ class Normalizer:
             raise RuntimeError("Call fit() before inverse_transform().")
         if X.ndim == 1:
             X = X.unsqueeze(1)
+        assert self._loc is not None and self._scale is not None
         return X * self._scale.to(X.device) + self._loc.to(X.device)
 
     def fit_transform(self, X: torch.Tensor) -> torch.Tensor:

@@ -123,7 +123,7 @@ class GFFPIELM(BasePIELM):
             self._fm = self._build_fm(input_dim)
 
         blocks = _collect_blocks(
-            self._fm, dataset, pde_operator, bcs, ics,
+            self._fm, dataset, pde_operator, bcs, ics,  # type: ignore[arg-type]
             self.w_pde, self.w_bc, self.w_ic, self.dtype, self._device,
         )
         if not blocks:

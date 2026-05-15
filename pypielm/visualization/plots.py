@@ -164,7 +164,7 @@ def plot_solution_2d(
 
     U_pred_grid = griddata(pts, u_pred_np, (X_grid, Y_grid), method="linear")
 
-    def _plot_panel(ax, Z, panel_title):
+    def _plot_panel(ax: Any, Z: Any, panel_title: str) -> None:
         im = ax.pcolormesh(X_grid, Y_grid, Z, cmap=cmap, shading="auto")
         ax.set_title(panel_title)
         ax.set_xlabel("x")

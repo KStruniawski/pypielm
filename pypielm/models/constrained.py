@@ -517,6 +517,10 @@ class StefanPIELM(BasePIELM):
         dtype: Floating-point dtype.
     """
 
+    # Buffer type annotations (register_buffer sets these; declare for mypy)
+    _beta_left: torch.Tensor | None
+    _beta_right: torch.Tensor | None
+
     def __init__(
         self,
         hidden_dim: int = 200,
@@ -611,6 +615,7 @@ class StefanPIELM(BasePIELM):
     def predict(self, X: Array) -> Tensor:
         if self._beta_left is None:
             raise RuntimeError("Call fit() before predict().")
+        assert self._fm_left is not None and self._fm_right is not None
         X_t = _ensure_tensor(X, self.dtype, self._device)
         mask = X_t[:, 0] <= self._interface
         out = torch.empty(X_t.shape[0], self._beta_left.shape[1],
@@ -631,6 +636,7 @@ class StefanPIELM(BasePIELM):
     def get_feature_matrix(self, X: Array) -> Tensor:
         if self._fm_left is None:
             raise RuntimeError("Call fit() before get_feature_matrix().")
+        assert self._fm_right is not None
         X_t = _ensure_tensor(X, self.dtype, self._device)
         mask = X_t[:, 0] <= self._interface
         H = torch.empty(X_t.shape[0], self.hidden_dim, dtype=self.dtype, device=self._device)

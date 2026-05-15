@@ -83,7 +83,7 @@ def _load_array_dict(path: Path) -> dict[str, np.ndarray]:
     if suffix == ".csv":
         raw = np.genfromtxt(path, delimiter=",", names=True)
         if raw.dtype.names:
-            return {n: np.asarray(raw[n]) for n in raw.dtype.names}
+            return {n: np.asarray(raw[n]) for n in raw.dtype.names}  # type: ignore[call-overload]
         # No header — fall through to plain table
         raw2 = np.genfromtxt(path, delimiter=",", dtype=float)
         if raw2.ndim == 1:
