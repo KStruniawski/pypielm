@@ -7,7 +7,8 @@ and CLI commands can reference models by name without hardcoded imports.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from pypielm.core.base import BasePIELM
