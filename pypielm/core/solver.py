@@ -18,11 +18,10 @@ import torch
 class BayesianSolveResult(NamedTuple):
     """Result of the Bayesian linear solve.
 
-    Attributes:
-        beta_mean: Posterior mean of output weights, shape ``(H, out_dim)``.
-        beta_cov: Posterior precision matrix (inverse covariance), shape
-            ``(H, H)``.  Stored as *precision* (not covariance) for numerical
-            stability; invert only when uncertainty quantification is needed.
+    ``beta_mean``: posterior mean of output weights, shape ``(H, out_dim)``.
+    ``beta_cov``: posterior precision matrix (inverse covariance), shape
+    ``(H, H)``.  Stored as *precision* (not covariance) for numerical
+    stability; invert only when uncertainty quantification is needed.
     """
 
     beta_mean: torch.Tensor
@@ -30,14 +29,12 @@ class BayesianSolveResult(NamedTuple):
 
 
 class WeightedLinearSystem(NamedTuple):
-    """One weighted observation block: y ≈ H @ beta + eps.
+    """One weighted observation block: ``y ≈ H @ beta + eps``.
 
-    Attributes:
-        H: Feature / design matrix, shape ``(N, H)``.
-        y: Target values, shape ``(N, out_dim)`` or ``(N,)``.
-        weight: Observation precision 1/σ².  Rows are scaled by
-            ``sqrt(weight)`` before the solve, so higher weight increases the
-            influence of this block on the output weights.
+    ``H``: feature/design matrix, shape ``(N, H)``.
+    ``y``: target values, shape ``(N, out_dim)`` or ``(N,)``.
+    ``weight``: observation precision 1/σ²; rows are scaled by
+    ``sqrt(weight)`` before the solve.
     """
 
     H: torch.Tensor

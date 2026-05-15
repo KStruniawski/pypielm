@@ -1,20 +1,18 @@
 """Constraint-enforcing PIELM variants and additional model library.
 
 Implemented variants:
-* :class:`NullSpacePIELM`        — Projects β onto the null space of the BC
-  constraint matrix, hard-enforcing boundary conditions.
-* :class:`EigPIELM`              — Eigendecomposition-based BC enforcement.
-* :class:`LSEELM`                — Least-squares ELM with equality constraints
-  via Lagrange multipliers.
-* :class:`StefanPIELM`           — Free-boundary (Stefan) with iterative
-  interface tracking (simplified single-front version).
+
+* :class:`NullSpacePIELM` — null-space BC projection.
+* :class:`EigPIELM` — eigendecomposition-based BC enforcement.
+* :class:`LSEELM` — least-squares ELM with equality constraints.
+* :class:`StefanPIELM` — free-boundary (Stefan) iterative interface tracking.
 
 Additional variants (functional wrappers over CorePIELM / VanillaPIELM):
-* :class:`NormalEquationELM`, :class:`ParameterRetentionELM`,
-  :class:`PiecewiseELM`, :class:`DELM`,
-  :class:`FPIELM`, :class:`SGEPIELM`, :class:`RINN`, :class:`RaNNPIELM`,
-  :class:`XPIELM`, :class:`PIELMRVDS`, :class:`TSPIELM`,
-  :class:`KAPIELM`, :class:`SoftPartitionKAPIELM`.
+:class:`NormalEquationELM`, :class:`ParameterRetentionELM`,
+:class:`PiecewiseELM`, :class:`DELM`,
+:class:`FPIELM`, :class:`SGEPIELM`, :class:`RINN`, :class:`RaNNPIELM`,
+:class:`XPIELM`, :class:`PIELMRVDS`, :class:`TSPIELM`,
+:class:`KAPIELM`, :class:`SoftPartitionKAPIELM`.
 """
 
 from __future__ import annotations

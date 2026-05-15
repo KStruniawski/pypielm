@@ -2,8 +2,6 @@ Data Layer (``pypielm.data``)
 ==============================
 
 .. automodule:: pypielm.data
-   :members:
-   :undoc-members:
 
 PIELMDataset
 ------------
@@ -17,8 +15,6 @@ Adapters
 --------
 
 .. automodule:: pypielm.data.adapters
-   :members:
-   :undoc-members:
 
 .. automodule:: pypielm.data.adapters.csv_adapter
    :members:

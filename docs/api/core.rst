@@ -2,8 +2,6 @@ Core Abstractions (``pypielm.core``)
 =====================================
 
 .. automodule:: pypielm.core
-   :members:
-   :undoc-members:
 
 BasePIELM
 ---------

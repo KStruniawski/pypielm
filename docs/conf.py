@@ -4,7 +4,15 @@
 from __future__ import annotations
 
 import sys
+import warnings
 from pathlib import Path
+
+# Suppress PendingDeprecationWarnings from sphinx-autodoc-typehints on Sphinx 9
+warnings.filterwarnings(
+    "ignore",
+    message=".*set_application.*is deprecated",
+    category=DeprecationWarning,
+)
 
 # Make the package importable without installing
 sys.path.insert(0, str(Path(__file__).parents[1]))
@@ -53,6 +61,13 @@ autodoc_member_order = "bysource"
 autodoc_typehints = "description"
 autodoc_typehints_description_target = "documented"
 autoclass_content = "both"
+
+# Suppress known false-positive warnings
+suppress_warnings = [
+    "sphinx_autodoc_typehints.local_function",   # closures without @functools.wraps
+    "sphinx_autodoc_typehints.forward_reference", # private TypeVars not resolvable
+    "ref.duplicate",                               # autosummary re-documents symbols
+]
 
 # intersphinx mapping
 intersphinx_mapping = {
