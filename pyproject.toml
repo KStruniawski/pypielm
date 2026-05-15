@@ -1,0 +1,135 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pypielm"
+version = "0.1.0"
+description = "A Unified and Reproducible Framework for Physics-Informed Extreme Learning Machines"
+readme = "README.md"
+license = { text = "CC BY-NC-ND 4.0" }
+authors = [{ name = "Karol Struniawski, PhD", email = "karol.struniawski@sggw.edu.pl" }]
+requires-python = ">=3.10"
+keywords = [
+    "physics-informed",
+    "extreme learning machine",
+    "ELM",
+    "PIELM",
+    "partial differential equations",
+    "scientific machine learning",
+    "PINNs",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: Other/Proprietary License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Typing :: Typed",
+]
+dependencies = [
+    "torch>=2.0",
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+viz = [
+    "matplotlib>=3.7",
+]
+bench = [
+    "memory-profiler>=0.61",
+    "psutil>=5.9",
+]
+export = [
+    "onnx>=1.14",
+    "onnxruntime>=1.16",
+]
+app = [
+    # Web frontend lives in the separate ``pypielm-app`` package.
+    # This group is kept for legacy compatibility and installs nothing.
+]
+docs = [
+    "sphinx>=7.0",
+    "sphinx-autodoc-typehints>=1.24",
+    "myst-parser>=2.0",
+    "furo>=2023.9.10",
+]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.1",
+    "mypy>=1.5",
+    "hypothesis>=6.80",
+    "matplotlib>=3.7",
+    "memory-profiler>=0.61",
+    "psutil>=5.9",
+]
+
+[project.scripts]
+pypielm = "pypielm.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/KStruniawski/pypielm"
+Repository = "https://github.com/KStruniawski/pypielm"
+Documentation = "https://pypielm.readthedocs.io"
+"Bug Tracker" = "https://github.com/KStruniawski/pypielm/issues"
+Changelog = "https://github.com/KStruniawski/pypielm/releases"
+
+[tool.hatch.build.targets.wheel]
+packages = ["pypielm"]
+
+# ---------------------------------------------------------------------------
+# Ruff
+# ---------------------------------------------------------------------------
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B", "C4", "SIM"]
+ignore = ["E501", "B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+
+# ---------------------------------------------------------------------------
+# Mypy
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+# ---------------------------------------------------------------------------
+# Pytest
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=pypielm --cov-report=term-missing -v"
+markers = [
+    "cuda: tests that require a CUDA-capable GPU",
+    "mps: tests that require Apple Silicon MPS",
+    "slow: tests that take more than a few seconds",
+    "accelerator: tests parametrized over available accelerators",
+]
+
+[tool.coverage.run]
+source = ["pypielm"]
+omit = ["tests/*", "examples/*", "benchmarks/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]

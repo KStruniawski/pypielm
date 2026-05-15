@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+dist/
+build/
+*.egg-info/
+.coverage
+coverage.xml
+htmlcov/
+.hypothesis/
+docs/_build/
+benchmarks/results/
