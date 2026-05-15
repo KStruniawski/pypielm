@@ -37,7 +37,7 @@ class Normalizer:
         self._scale: torch.Tensor | None = None  # range or std
 
     # ------------------------------------------------------------------
-    def fit(self, X: torch.Tensor) -> "Normalizer":
+    def fit(self, X: torch.Tensor) -> Normalizer:
         """Compute normalisation statistics from *X* (rows = samples)."""
         if X.ndim == 1:
             X = X.unsqueeze(1)
@@ -143,6 +143,6 @@ class Pipeline:
     def transform(self, X: torch.Tensor) -> torch.Tensor:
         """Apply all fitted steps in sequence."""
         for step in self.steps:
-            fn = getattr(step, "transform", None) or getattr(step, "fit_transform")
+            fn = getattr(step, "transform", None) or step.fit_transform
             X = fn(X)
         return X

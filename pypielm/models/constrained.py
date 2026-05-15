@@ -33,7 +33,7 @@ from pypielm.core.base import (
     _stack_blocks,
 )
 from pypielm.core.feature_maps import RandomFeatureMap
-from pypielm.core.solver import WeightedLinearSystem, ridge_solve, rrqr_solve
+from pypielm.core.solver import WeightedLinearSystem, ridge_solve
 from pypielm.models.registry import register
 from pypielm.models.vanilla import _collect_blocks
 
@@ -104,13 +104,13 @@ class NullSpacePIELM(BasePIELM):
 
     def fit(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         *,
         pde_operator: Any | None = None,
         bcs: list[Any] | None = None,
         ics: list[Any] | None = None,
         collocation_sampler: Any | None = None,
-    ) -> "NullSpacePIELM":
+    ) -> NullSpacePIELM:
         input_dim = dataset.X_colloc.shape[1]
         if self._fm is None or self._fm.input_dim != input_dim:
             self._fm = self._build_fm(input_dim)
@@ -144,7 +144,7 @@ class NullSpacePIELM(BasePIELM):
 
         # Null space of C via SVD
         _, S, Vh = torch.linalg.svd(C, full_matrices=True)
-        rank = int((S > self.null_tol * S[0]).sum().item()) if S.numel() > 0 else 0
+        rank = int((self.null_tol * S[0] < S).sum().item()) if S.numel() > 0 else 0
         # Z spans the null space: columns of Vh[rank:].T  →  (H, H-rank)
         Z = Vh[rank:, :].T  # (H, n_null)
         if Z.shape[1] == 0:
@@ -254,13 +254,13 @@ class EigPIELM(BasePIELM):
 
     def fit(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         *,
         pde_operator: Any | None = None,
         bcs: list[Any] | None = None,
         ics: list[Any] | None = None,
         collocation_sampler: Any | None = None,
-    ) -> "EigPIELM":
+    ) -> EigPIELM:
         input_dim = dataset.X_colloc.shape[1]
         if self._fm is None or self._fm.input_dim != input_dim:
             self._fm = self._build_fm(input_dim)
@@ -390,13 +390,13 @@ class LSEELM(BasePIELM):
 
     def fit(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         *,
         pde_operator: Any | None = None,
         bcs: list[Any] | None = None,
         ics: list[Any] | None = None,
         collocation_sampler: Any | None = None,
-    ) -> "LSEELM":
+    ) -> LSEELM:
         input_dim = dataset.X_colloc.shape[1]
         if self._fm is None or self._fm.input_dim != input_dim:
             self._fm = self._build_fm(input_dim)
@@ -555,13 +555,13 @@ class StefanPIELM(BasePIELM):
 
     def fit(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         *,
         pde_operator: Any | None = None,
         bcs: list[Any] | None = None,
         ics: list[Any] | None = None,
         collocation_sampler: Any | None = None,
-    ) -> "StefanPIELM":
+    ) -> StefanPIELM:
         X = dataset.X_data if dataset.X_data is not None else dataset.X_colloc
         y = dataset.y_data
         if y is None:
@@ -668,13 +668,13 @@ def _make_core_variant(
 
         def fit(
             self,
-            dataset: "PIELMDataset",
+            dataset: PIELMDataset,
             *,
             pde_operator: Any | None = None,
             bcs: list[Any] | None = None,
             ics: list[Any] | None = None,
             collocation_sampler: Any | None = None,
-        ) -> "_Variant":
+        ) -> _Variant:
             self._core.fit(
                 dataset,
                 pde_operator=pde_operator,

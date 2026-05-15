@@ -15,8 +15,8 @@ from __future__ import annotations
 
 from .csv_adapter import CSVAdapter
 from .npz_adapter import NPZAdapter
-from .pinnacle_adapter import PINNacleAdapter
 from .pdebench_adapter import PDEBenchAdapter
+from .pinnacle_adapter import PINNacleAdapter
 from .torch_adapter import TorchDatasetAdapter
 
 __all__ = [

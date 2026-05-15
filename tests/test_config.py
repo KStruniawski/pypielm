@@ -3,12 +3,10 @@
 from __future__ import annotations
 
 import json
-import textwrap
 from pathlib import Path
 
 import pytest
 import yaml
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -183,6 +181,7 @@ class TestRunExperiment:
 
     def test_metrics_are_finite(self, tmp_path):
         import math
+
         from pypielm.utils.config import ExperimentConfig, run_experiment
 
         cfg = ExperimentConfig(
@@ -210,7 +209,7 @@ class TestRunExperiment:
             device="cpu",
             output_dir=str(out),
         )
-        result = run_experiment(cfg)
+        run_experiment(cfg)
         assert (out / "model.pt").exists()
 
 
@@ -223,6 +222,7 @@ class TestCLI:
         """Run the CLI main() and capture stdout/stderr."""
         import io
         import sys as _sys
+
         from pypielm.__main__ import main
 
         old_out, old_err = _sys.stdout, _sys.stderr
@@ -336,8 +336,8 @@ class TestResolvePDEOperator:
             assert _resolve_pde_operator({"operator": op}) is None
 
     def test_analytic_laplacian(self):
-        from pypielm.utils.config import _resolve_pde_operator
         from pypielm.pde.operators import AnalyticLaplacian
+        from pypielm.utils.config import _resolve_pde_operator
         obj = _resolve_pde_operator({"operator": "analytic_laplacian"})
         assert isinstance(obj, AnalyticLaplacian)
 
@@ -357,20 +357,20 @@ class TestResolveSampler:
         assert _resolve_sampler({}) is None
 
     def test_uniform_sampler(self):
-        from pypielm.utils.config import _resolve_sampler
         from pypielm.pde.collocation import UniformSampler
+        from pypielm.utils.config import _resolve_sampler
         s = _resolve_sampler({"collocation": "UniformSampler", "n_collocation": 50})
         assert isinstance(s, UniformSampler)
 
     def test_lhs_sampler(self):
-        from pypielm.utils.config import _resolve_sampler
         from pypielm.pde.collocation import LHSSampler
+        from pypielm.utils.config import _resolve_sampler
         s = _resolve_sampler({"collocation": "LHSSampler", "n_collocation": 50})
         assert isinstance(s, LHSSampler)
 
     def test_grid_sampler(self):
-        from pypielm.utils.config import _resolve_sampler
         from pypielm.pde.collocation import GridSampler
+        from pypielm.utils.config import _resolve_sampler
         s = _resolve_sampler({"collocation": "GridSampler", "nx": 10})
         assert isinstance(s, GridSampler)
 

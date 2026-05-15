@@ -21,7 +21,6 @@ import torch
 from pypielm.core.solver import WeightedLinearSystem
 from pypielm.data.dataset import PIELMDataset
 
-
 # ---------------------------------------------------------------------------
 # Shared helpers
 # ---------------------------------------------------------------------------

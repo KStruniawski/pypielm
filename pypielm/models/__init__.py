@@ -18,43 +18,44 @@ Public surface::
 
 from __future__ import annotations
 
-# Core PIELM variants
-from .vanilla import CorePIELM, VanillaPIELM
 from .bayesian import BayesianPIELM
-from .fourier import GFFPIELM
-from .domain import DPIELM, LocELM, DDELMCoarse
-from .curriculum import CurriculumPIELM
 from .constrained import (
-    NullSpacePIELM,
-    EigPIELM,
-    LSEELM,
-    StefanPIELM,
-    NormalEquationELM,
-    ParameterRetentionELM,
-    PiecewiseELM,
     DELM,
     FPIELM,
-    SGEPIELM,
-    RINN,
-    RaNNPIELM,
-    XPIELM,
-    PIELMRVDS,
-    TSPIELM,
     KAPIELM,
+    LSEELM,
+    PIELMRVDS,
+    RINN,
+    SGEPIELM,
+    TSPIELM,
+    XPIELM,
+    EigPIELM,
+    NormalEquationELM,
+    NullSpacePIELM,
+    ParameterRetentionELM,
+    PiecewiseELM,
+    RaNNPIELM,
     SoftPartitionKAPIELM,
+    StefanPIELM,
 )
+from .curriculum import CurriculumPIELM
+from .domain import DPIELM, DDELMCoarse, LocELM
+from .fourier import GFFPIELM
 
 # Gradient-based PINN baselines
 from .pinn import (
-    VanillaPINN,
     AdaptivePINN,
     FourierPINN,
     MuonPINN,
     ResidualAdaptivePINN,
+    VanillaPINN,
 )
 
 # Registry helpers
 from .registry import MODEL_REGISTRY, get_model, register
+
+# Core PIELM variants
+from .vanilla import CorePIELM, VanillaPIELM
 
 __all__ = [
     # PIELM

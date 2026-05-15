@@ -31,7 +31,7 @@ def _simple_dataset(n: int = 20, d: int = 2, *, x_ic: bool = False):
 
     X = torch.randn(n, d, dtype=torch.float64)
     y = torch.randn(n, 1, dtype=torch.float64)
-    kw: dict = dict(X_colloc=X, X_data=X, y_data=y)
+    kw: dict = {"X_colloc": X, "X_data": X, "y_data": y}
     if x_ic:
         X_ic = torch.randn(5, d, dtype=torch.float64)
         y_ic = torch.randn(5, 1, dtype=torch.float64)
@@ -119,8 +119,8 @@ def test_stack_blocks_empty_raises():
 class TestVanillaPIELMCoverage:
 
     def test_fit_no_y_data_raises(self):
-        from pypielm.models import VanillaPIELM
         from pypielm.data.dataset import PIELMDataset
+        from pypielm.models import VanillaPIELM
 
         ds = PIELMDataset(X_colloc=torch.randn(10, 2))
         model = VanillaPIELM(hidden_dim=8, seed=0)
@@ -224,8 +224,8 @@ class TestCorePIELMCoverage:
 
     def test_no_blocks_raises(self):
         """fit() with no data / physics raises ValueError."""
-        from pypielm.models import CorePIELM
         from pypielm.data.dataset import PIELMDataset
+        from pypielm.models import CorePIELM
 
         ds = PIELMDataset(X_colloc=torch.randn(10, 2))
         model = CorePIELM(hidden_dim=8, seed=0)
@@ -281,8 +281,8 @@ class TestBayesianPIELMCoverage:
 
     def test_predict_with_uncertainty_multioutput(self):
         """Multi-output (out_dim > 1) triggers std.expand_as(mean)."""
-        from pypielm.models import BayesianPIELM
         from pypielm.data.dataset import PIELMDataset
+        from pypielm.models import BayesianPIELM
 
         X = torch.randn(20, 2, dtype=torch.float64)
         y = torch.randn(20, 2, dtype=torch.float64)  # 2 outputs
@@ -339,8 +339,8 @@ class TestBayesianPIELMCoverage:
 
     def test_fit_no_blocks_raises(self):
         """No data, no physics → ValueError."""
-        from pypielm.models import BayesianPIELM
         from pypielm.data.dataset import PIELMDataset
+        from pypielm.models import BayesianPIELM
 
         ds = PIELMDataset(X_colloc=torch.randn(10, 2))
         model = BayesianPIELM(hidden_dim=8)
@@ -439,9 +439,9 @@ class TestFinalCoverageBoost:
 
     # vanilla.py lines 69-71 — explicit bcs list passed to CorePIELM.fit
     def test_core_pielm_fit_with_explicit_bcs(self):
+        from pypielm.data.dataset import PIELMDataset
         from pypielm.models import CorePIELM
         from pypielm.pde.constraints import DirichletBC
-        from pypielm.data.dataset import PIELMDataset
 
         X_bc = torch.zeros(4, 1, dtype=torch.float64)
         bc = DirichletBC(
@@ -456,9 +456,9 @@ class TestFinalCoverageBoost:
 
     # vanilla.py lines 79-81 — explicit ics list passed to CorePIELM.fit
     def test_core_pielm_fit_with_explicit_ics(self):
+        from pypielm.data.dataset import PIELMDataset
         from pypielm.models import CorePIELM
         from pypielm.pde.constraints import InitialCondition
-        from pypielm.data.dataset import PIELMDataset
 
         X_ic = torch.zeros(4, 1, dtype=torch.float64)
         ic = InitialCondition(
@@ -473,8 +473,8 @@ class TestFinalCoverageBoost:
 
     # pde/constraints.py line 120 — NeumannBC with 1D flux_fn (triggers unsqueeze)
     def test_neumann_bc_1d_flux_fn(self):
-        from pypielm.pde.constraints import NeumannBC
         from pypielm.core.feature_maps import RandomFeatureMap
+        from pypielm.pde.constraints import NeumannBC
 
         pts = torch.linspace(0.0, 1.0, 4, dtype=torch.float64).unsqueeze(1)
         normal = torch.ones(4, 1, dtype=torch.float64)
@@ -489,8 +489,8 @@ class TestFinalCoverageBoost:
 
     # pde/constraints.py line 154 — InitialCondition with 1D ic_fn (triggers unsqueeze)
     def test_initial_condition_1d_ic_fn(self):
-        from pypielm.pde.constraints import InitialCondition
         from pypielm.core.feature_maps import RandomFeatureMap
+        from pypielm.pde.constraints import InitialCondition
 
         pts = torch.linspace(0.0, 1.0, 4, dtype=torch.float64).unsqueeze(1)
         ic = InitialCondition(

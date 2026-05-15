@@ -9,7 +9,6 @@ import torch
 
 from pypielm.data.dataset import PIELMDataset
 
-
 _FIELD_KEYS = ("X_colloc", "X_bc", "y_bc", "X_ic", "y_ic", "X_data", "y_data")
 
 

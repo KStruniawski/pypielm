@@ -35,7 +35,6 @@ import sys
 from pathlib import Path
 from typing import Any
 
-
 # ---------------------------------------------------------------------------
 # Sub-command: run
 # ---------------------------------------------------------------------------
@@ -78,6 +77,7 @@ def _run_single_sweep_entry(entry: dict[str, Any]) -> dict[str, Any]:
     from pathlib import Path as _Path
 
     import yaml
+
     from pypielm.utils.config import load_config, run_experiment
 
     # Write entry to a temp YAML, load it, run
@@ -167,7 +167,7 @@ def _cmd_sweep(args: argparse.Namespace) -> int:
 # ---------------------------------------------------------------------------
 
 def _cmd_export(args: argparse.Namespace) -> int:
-    import torch
+
     from pypielm.io.checkpoint import load_model
     from pypielm.io.export import to_onnx, to_torchscript
 

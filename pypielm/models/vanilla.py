@@ -39,7 +39,7 @@ if TYPE_CHECKING:
 
 def _collect_blocks(
     fm: RandomFeatureMap,
-    dataset: "PIELMDataset",
+    dataset: PIELMDataset,
     pde_operator: Any | None,
     bcs: list[Any] | None,
     ics: list[Any] | None,
@@ -141,7 +141,7 @@ class VanillaPIELM(BasePIELM):
             dtype=self.dtype,
         )
 
-    def fit(self, dataset: "PIELMDataset", **kwargs: Any) -> "VanillaPIELM":
+    def fit(self, dataset: PIELMDataset, **kwargs: Any) -> VanillaPIELM:
         X = dataset.X_data if dataset.X_data is not None else dataset.X_colloc
         y = dataset.y_data
         if y is None:
@@ -255,13 +255,13 @@ class CorePIELM(BasePIELM):
 
     def fit(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         *,
         pde_operator: Any | None = None,
         bcs: list[Any] | None = None,
         ics: list[Any] | None = None,
         collocation_sampler: Any | None = None,
-    ) -> "CorePIELM":
+    ) -> CorePIELM:
         input_dim = dataset.X_colloc.shape[1]
         if self._fm is None or self._fm.input_dim != input_dim:
             self._fm = self._build_fm(input_dim)

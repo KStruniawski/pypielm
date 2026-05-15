@@ -32,11 +32,9 @@ def seed_everything(seed: int = 42, *, deterministic: bool = True) -> None:
         # Required for deterministic CuBLAS ops on CUDA >= 10.2
         if torch.cuda.is_available():  # pragma: no cover
             os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
-        try:
+        import contextlib
+        with contextlib.suppress(RuntimeError):  # pragma: no cover
             torch.use_deterministic_algorithms(True)
-        except RuntimeError:  # pragma: no cover
-            # Some platforms do not support all deterministic ops; warn but continue
-            pass
 
 
 def get_device(prefer_cuda: bool = True, prefer_mps: bool = True) -> torch.device:

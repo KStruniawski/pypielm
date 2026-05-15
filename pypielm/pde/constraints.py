@@ -14,7 +14,8 @@ Public API::
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 import torch
 
@@ -45,8 +46,8 @@ class DirichletBC:
         self.weight = float(weight)
 
     def assemble(
-        self, feature_map: "RandomFeatureMap"
-    ) -> "WeightedLinearSystem":
+        self, feature_map: RandomFeatureMap
+    ) -> WeightedLinearSystem:
         """Evaluate BC and return the linear system block.
 
         Args:
@@ -93,8 +94,8 @@ class NeumannBC:
         self.weight = float(weight)
 
     def assemble(
-        self, feature_map: "RandomFeatureMap"
-    ) -> "WeightedLinearSystem":
+        self, feature_map: RandomFeatureMap
+    ) -> WeightedLinearSystem:
         """Evaluate flux BC and return the linear system block.
 
         Builds the directional-derivative feature matrix::
@@ -143,8 +144,8 @@ class InitialCondition:
         self.weight = float(weight)
 
     def assemble(
-        self, feature_map: "RandomFeatureMap"
-    ) -> "WeightedLinearSystem":
+        self, feature_map: RandomFeatureMap
+    ) -> WeightedLinearSystem:
         """Evaluate IC and return the linear system block."""
         from pypielm.core.solver import WeightedLinearSystem
 
@@ -183,8 +184,8 @@ class PeriodicBC:
         self.weight = float(weight)
 
     def assemble(
-        self, feature_map: "RandomFeatureMap"
-    ) -> "WeightedLinearSystem":
+        self, feature_map: RandomFeatureMap
+    ) -> WeightedLinearSystem:
         """Assemble the pairing penalty block.
 
         Returns rows ``H(x_left) - H(x_right)`` with target zero, so the

@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 _VERSION = "0.1.0"
 
 
-def _get_model_registry_name(model: "BasePIELM") -> str:
+def _get_model_registry_name(model: BasePIELM) -> str:
     """Return the registry key for *model* (e.g. ``'core_pielm'``)."""
     from pypielm.models.registry import MODEL_REGISTRY
     cls = type(model)
@@ -23,16 +23,14 @@ def _get_model_registry_name(model: "BasePIELM") -> str:
     return f"{cls.__module__}.{cls.__qualname__}"
 
 
-def _extract_config(model: "BasePIELM") -> dict[str, Any]:
+def _extract_config(model: BasePIELM) -> dict[str, Any]:
     """Extract constructor kwargs from a model's public attributes."""
     config: dict[str, Any] = {}
     for k, v in vars(model).items():
         if k.startswith("_"):
             continue
         # Skip non-serialisable torch types for JSON compatibility but keep dtype name
-        if isinstance(v, torch.dtype):
-            config[k] = str(v)
-        elif isinstance(v, torch.device):
+        if isinstance(v, (torch.dtype, torch.device)):
             config[k] = str(v)
         elif isinstance(v, (int, float, str, bool, type(None))):
             config[k] = v
@@ -40,7 +38,7 @@ def _extract_config(model: "BasePIELM") -> dict[str, Any]:
 
 
 def save_model(
-    model: "BasePIELM",
+    model: BasePIELM,
     path: str | Path,
     *,
     include_config: bool = True,
@@ -84,10 +82,10 @@ def save_model(
 def load_model(
     path: str | Path,
     *,
-    model_class: "type[BasePIELM] | None" = None,
+    model_class: type[BasePIELM] | None = None,
     device: str | torch.device = "cpu",
     dtype: torch.dtype | None = None,
-) -> "BasePIELM":
+) -> BasePIELM:
     """Load a checkpoint written by :func:`save_model`.
 
     If *model_class* is ``None``, the class is inferred from the checkpoint's

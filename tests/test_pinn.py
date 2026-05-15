@@ -32,7 +32,6 @@ from pypielm.models.pinn import (
 from pypielm.models.registry import get_model
 from pypielm.pde.operators import AnalyticLaplacian
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -60,7 +59,7 @@ def _make_poisson_1d(
 
 def _small_pinn(**kwargs) -> VanillaPINN:
     """Return a tiny VanillaPINN for fast tests."""
-    defaults = dict(layer_dims=[32, 32], max_epochs=200, lr=1e-3, seed=42)
+    defaults = {"layer_dims": [32, 32], "max_epochs": 200, "lr": 1e-3, "seed": 42}
     defaults.update(kwargs)
     return VanillaPINN(**defaults)
 
@@ -85,7 +84,6 @@ def test_vanilla_pinn_predict_shape():
 
 def test_vanilla_pinn_predict_numpy_input():
     """predict() should accept numpy arrays."""
-    import numpy as np
     ds, op, X_test, _ = _make_poisson_1d(50)
     model = _small_pinn().fit(ds, pde_operator=op)
     pred = model.predict(X_test.numpy())
@@ -397,7 +395,7 @@ def test_residual_adaptive_pinn_loss_decreases():
 def test_residual_adaptive_pinn_rar_grows_colloc():
     """RAR should add points; collocation size increases (or hits max_colloc cap)."""
     ds, op, _, _ = _make_poisson_1d(30)
-    n_init = int(ds.X_colloc.shape[0])
+    int(ds.X_colloc.shape[0])
     model = ResidualAdaptivePINN(
         width=16, n_blocks=1, max_epochs=120,
         domain_lb=[0.0], domain_ub=[1.0], seed=0,

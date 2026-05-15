@@ -13,14 +13,12 @@ from __future__ import annotations
 import math
 
 import numpy as np
-import pytest
 import torch
 from hypothesis import HealthCheck, assume, given, settings
 from hypothesis import strategies as st
 
 from pypielm.core.feature_maps import FourierFeatureMap, RandomFeatureMap
-from pypielm.core.solver import bayesian_solve, ridge_solve, tikhonov_solve
-from pypielm.core.solver import WeightedLinearSystem
+from pypielm.core.solver import WeightedLinearSystem, bayesian_solve, ridge_solve, tikhonov_solve
 
 # ---------------------------------------------------------------------------
 # Strategies

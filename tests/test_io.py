@@ -12,7 +12,6 @@ from pypielm.io.export import to_torchscript
 from pypielm.models.vanilla import CorePIELM
 from pypielm.pde.operators import AnalyticLaplacian
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

@@ -84,7 +84,7 @@ class PIELMDataset:
         dtype: torch.dtype = torch.float64,
         device: str | torch.device = "cpu",
         meta: dict[str, Any] | None = None,
-    ) -> "PIELMDataset":
+    ) -> PIELMDataset:
         """Construct a :class:`PIELMDataset` from numpy arrays or lists.
 
         Args:
@@ -121,7 +121,7 @@ class PIELMDataset:
         self,
         device: str | torch.device,
         dtype: torch.dtype | None = None,
-    ) -> "PIELMDataset":
+    ) -> PIELMDataset:
         """Move all tensors to *device* (and optionally cast to *dtype*).
 
         Returns a new :class:`PIELMDataset`; the original is unchanged.

@@ -155,7 +155,7 @@ class _ResNet(nn.Module):
 
 def _pinn_loss(
     net: nn.Module,
-    dataset: "PIELMDataset",
+    dataset: PIELMDataset,
     pde_operator: Any | None,
     bcs: list[Any] | None,
     ics: list[Any] | None,
@@ -307,7 +307,7 @@ class _GradPINNBase(BasePIELM):
 
     def _train(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         pde_operator: Any | None,
         bcs: list[Any] | None,
         ics: list[Any] | None,
@@ -479,13 +479,13 @@ class VanillaPINN(_GradPINNBase):
 
     def fit(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         *,
         pde_operator: Any | None = None,
         bcs: list[Any] | None = None,
         ics: list[Any] | None = None,
         collocation_sampler: Any | None = None,
-    ) -> "VanillaPINN":
+    ) -> VanillaPINN:
         """Train the PINN on *dataset*.
 
         Args:
@@ -590,13 +590,13 @@ class AdaptivePINN(VanillaPINN):
 
     def fit(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         *,
         pde_operator: Any | None = None,
         bcs: list[Any] | None = None,
         ics: list[Any] | None = None,
         collocation_sampler: Any | None = None,
-    ) -> "AdaptivePINN":
+    ) -> AdaptivePINN:
         """Train with periodic adaptive collocation resampling."""
         input_dim = int(dataset.X_colloc.shape[-1])
         self._net = self._build_net(input_dim)
@@ -644,16 +644,16 @@ class AdaptivePINN(VanillaPINN):
 
     def _resample(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         pde_operator: Any,
         lb: Tensor,
         ub: Tensor,
         device: torch.device,
         dtype: torch.dtype,
-    ) -> "PIELMDataset":
+    ) -> PIELMDataset:
         """Resample collocation from high-residual regions."""
         import copy
-        from pypielm.data.dataset import PIELMDataset
+
 
         # Sample candidates
         d = lb.shape[0]
@@ -662,7 +662,7 @@ class AdaptivePINN(VanillaPINN):
         )
 
         # Evaluate PDE residual magnitude via autograd
-        X_cand_req = X_cand.requires_grad_(True)
+        X_cand.requires_grad_(True)
         self._net.eval()
 
         class _AutoFM:
@@ -792,13 +792,13 @@ class FourierPINN(VanillaPINN):
 
     def fit(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         *,
         pde_operator: Any | None = None,
         bcs: list[Any] | None = None,
         ics: list[Any] | None = None,
         collocation_sampler: Any | None = None,
-    ) -> "FourierPINN":
+    ) -> FourierPINN:
         """Train FourierPINN — encodes inputs before building the MLP."""
         input_dim = int(dataset.X_colloc.shape[-1])
         torch.manual_seed(self.seed)
@@ -872,7 +872,7 @@ class _MuonOptimizer(torch.optim.Optimizer):
         nesterov: bool = True,
         ns_steps: int = 5,
     ) -> None:
-        defaults = dict(lr=lr, momentum=momentum, nesterov=nesterov, ns_steps=ns_steps)
+        defaults = {"lr": lr, "momentum": momentum, "nesterov": nesterov, "ns_steps": ns_steps}
         super().__init__(params, defaults)
 
     @staticmethod
@@ -918,10 +918,7 @@ class _MuonOptimizer(torch.optim.Optimizer):
                     state["momentum_buffer"] = torch.zeros_like(g)
                 buf = state["momentum_buffer"]
                 buf.mul_(momentum).add_(g)
-                if nesterov:
-                    g = g + momentum * buf
-                else:
-                    g = buf
+                g = g + momentum * buf if nesterov else buf
 
                 if g.ndim == 2:
                     # Orthogonalise only matrix parameters
@@ -1071,16 +1068,16 @@ class ResidualAdaptivePINN(_GradPINNBase):
 
     def fit(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         *,
         pde_operator: Any | None = None,
         bcs: list[Any] | None = None,
         ics: list[Any] | None = None,
         collocation_sampler: Any | None = None,
-    ) -> "ResidualAdaptivePINN":
+    ) -> ResidualAdaptivePINN:
         """Train with ResNet backbone and RAR collocation refinement."""
         import copy
-        from pypielm.data.dataset import PIELMDataset  # noqa: F811
+
 
         input_dim = int(dataset.X_colloc.shape[-1])
         torch.manual_seed(self.seed)
@@ -1134,16 +1131,16 @@ class ResidualAdaptivePINN(_GradPINNBase):
 
     def _rar_update(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         pde_operator: Any,
         lb: Tensor,
         ub: Tensor,
         device: torch.device,
         dtype: torch.dtype,
-    ) -> "PIELMDataset":
+    ) -> PIELMDataset:
         """RAR: add ``n_new`` high-residual candidate points to collocation set."""
         import copy
-        from pypielm.data.dataset import PIELMDataset  # noqa: F811
+
 
         d = int(lb.shape[0])
         X_cand = lb + (ub - lb) * torch.rand(

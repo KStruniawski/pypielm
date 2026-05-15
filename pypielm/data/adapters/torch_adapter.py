@@ -13,7 +13,6 @@ import torch.utils.data
 
 from pypielm.data.dataset import PIELMDataset
 
-
 _VALID_ROLES = {"colloc", "bc", "ic", "data"}
 
 

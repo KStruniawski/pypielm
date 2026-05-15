@@ -11,13 +11,12 @@ Covers:
 
 from __future__ import annotations
 
-import torch
 import pytest
+import torch
 
 from pypielm.data.dataset import PIELMDataset
 from pypielm.models.domain import DPIELM, DDELMCoarse, LocELM
 from pypielm.models.registry import get_model
-
 
 # ---------------------------------------------------------------------------
 # Helpers

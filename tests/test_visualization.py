@@ -7,7 +7,6 @@ No display server required.
 from __future__ import annotations
 
 import os
-import tempfile
 from pathlib import Path
 
 import numpy as np
@@ -25,7 +24,6 @@ from pypielm.visualization import (
     plot_training_history,
     save_figure,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -212,7 +210,7 @@ class TestPlotPareto:
         fig = plot_pareto(results)
         ax = fig.axes[0]
         # Pareto front is a dashed red line
-        dashed_lines = [l for l in ax.lines if l.get_linestyle() in ("--", "dashed")]
+        dashed_lines = [line for line in ax.lines if line.get_linestyle() in ("--", "dashed")]
         assert len(dashed_lines) >= 1
 
     def test_log_y_scale(self, results):

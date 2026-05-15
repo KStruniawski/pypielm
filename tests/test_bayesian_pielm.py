@@ -12,15 +12,14 @@ Covers:
 
 from __future__ import annotations
 
-import torch
 import pytest
+import torch
 
 from pypielm.core.solver import WeightedLinearSystem
 from pypielm.data.dataset import PIELMDataset
 from pypielm.models.bayesian import BayesianPIELM
 from pypielm.models.registry import get_model
 from pypielm.pde.operators import AnalyticLaplacian
-
 
 # ---------------------------------------------------------------------------
 # Helpers

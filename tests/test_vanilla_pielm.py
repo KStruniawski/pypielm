@@ -12,15 +12,14 @@ Covers:
 
 from __future__ import annotations
 
-import torch
 import pytest
+import torch
 
 from pypielm.core.solver import WeightedLinearSystem
 from pypielm.data.dataset import PIELMDataset
-from pypielm.models.vanilla import CorePIELM, VanillaPIELM
 from pypielm.models.registry import get_model
+from pypielm.models.vanilla import CorePIELM, VanillaPIELM
 from pypielm.pde.operators import AnalyticLaplacian
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -122,7 +121,6 @@ def test_core_pielm_registry_lookup():
 
 def test_core_pielm_numpy_input():
     """CorePIELM should accept numpy arrays as input to predict."""
-    import numpy as np
     ds, op, X_test, y_exact = _make_poisson_1d(80)
     model = CorePIELM(hidden_dim=100, seed=0).fit(ds, pde_operator=op)
     X_np = X_test.numpy()

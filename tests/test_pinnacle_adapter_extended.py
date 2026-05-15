@@ -14,7 +14,6 @@ Skips gracefully when the PINNacle data directory is not present.
 
 from __future__ import annotations
 
-import io
 import textwrap
 from pathlib import Path
 

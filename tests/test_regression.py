@@ -16,10 +16,8 @@ bare CI checkout), the tests are skipped automatically.
 from __future__ import annotations
 
 import json
-import math
 from pathlib import Path
 
-import numpy as np
 import pytest
 import torch
 
@@ -131,8 +129,8 @@ class TestVanillaPIELMRegression:
     """VanillaPIELM on poisson_classic must match or beat benchmark R²."""
 
     def test_r2_within_tolerance(self, poisson_classic_dataset) -> None:
-        from pypielm.models import VanillaPIELM
         from pypielm.metrics.metrics import MetricsBundle
+        from pypielm.models import VanillaPIELM
 
         ds = poisson_classic_dataset
         model = VanillaPIELM(hidden_dim=128, ridge_lambda=1e-6, seed=42)
@@ -153,8 +151,8 @@ class TestVanillaPIELMRegression:
             f"R² too low: {metrics['r2']:.4f} vs reference {ref_r2:.4f}"
 
     def test_relative_l2_within_tolerance(self, poisson_classic_dataset) -> None:
-        from pypielm.models import VanillaPIELM
         from pypielm.metrics.metrics import MetricsBundle
+        from pypielm.models import VanillaPIELM
 
         ds = poisson_classic_dataset
         model = VanillaPIELM(hidden_dim=128, ridge_lambda=1e-6, seed=42)
@@ -197,8 +195,8 @@ class TestCorePIELMRegression:
 
     def test_r2_not_catastrophically_lower(self, poisson_classic_dataset) -> None:
         """CorePIELM R² must be at least as good as benchmark minus 10pp."""
-        from pypielm.models import CorePIELM
         from pypielm.metrics.metrics import MetricsBundle
+        from pypielm.models import CorePIELM
 
         ds = poisson_classic_dataset
         model = CorePIELM(hidden_dim=128, ridge_lambda=1e-6, seed=42)
@@ -279,8 +277,8 @@ class TestBayesianPIELMRegression:
 
 class TestGFFPIELMRegression:
     def test_r2_reasonable(self, poisson_classic_dataset) -> None:
-        from pypielm.models import GFFPIELM
         from pypielm.metrics.metrics import MetricsBundle
+        from pypielm.models import GFFPIELM
 
         ds = poisson_classic_dataset
         model = GFFPIELM(hidden_dim=128, seed=42)
@@ -306,8 +304,8 @@ class TestMetricsScale:
     """RMSE and MAE must be within reasonable range of the benchmark values."""
 
     def test_rmse_scale(self, poisson_classic_dataset) -> None:
-        from pypielm.models import VanillaPIELM
         from pypielm.metrics.metrics import MetricsBundle
+        from pypielm.models import VanillaPIELM
 
         ds = poisson_classic_dataset
         model = VanillaPIELM(hidden_dim=128, ridge_lambda=1e-6, seed=42)
@@ -326,8 +324,8 @@ class TestMetricsScale:
 
     def test_metrics_consistent(self, poisson_classic_dataset) -> None:
         """Multiple MetricsBundle calls on same data return identical results."""
-        from pypielm.models import VanillaPIELM
         from pypielm.metrics.metrics import MetricsBundle
+        from pypielm.models import VanillaPIELM
 
         ds = poisson_classic_dataset
         model = VanillaPIELM(hidden_dim=64, ridge_lambda=1e-6, seed=42)

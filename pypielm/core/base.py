@@ -19,8 +19,8 @@ import torch
 import torch.nn as nn
 
 if TYPE_CHECKING:
-    from pypielm.data.dataset import PIELMDataset
     from pypielm.core.solver import WeightedLinearSystem
+    from pypielm.data.dataset import PIELMDataset
 
 # ---------------------------------------------------------------------------
 # Type aliases
@@ -91,13 +91,13 @@ class BasePIELM(nn.Module):
     @abstractmethod
     def fit(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         *,
         pde_operator: Any | None = None,
         bcs: list[Any] | None = None,
         ics: list[Any] | None = None,
         collocation_sampler: Any | None = None,
-    ) -> "BasePIELM":
+    ) -> BasePIELM:
         """Solve for output weights analytically.
 
         Args:
@@ -216,7 +216,7 @@ def _compute_metric(
     raise ValueError(f"Unknown metric '{metric}'. Choose from: relative_l2, rmse, mae, r2, max_error.")
 
 
-def _stack_blocks(blocks: "list[WeightedLinearSystem]") -> tuple[Tensor, Tensor]:
+def _stack_blocks(blocks: list[WeightedLinearSystem]) -> tuple[Tensor, Tensor]:
     """Stack weighted :class:`~pypielm.core.solver.WeightedLinearSystem` blocks.
 
     Multiplies each row block by ``sqrt(weight)`` to incorporate the precision

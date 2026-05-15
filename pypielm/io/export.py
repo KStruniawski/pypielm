@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import torch
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 def _make_example_input(
-    model: "BasePIELM",
+    model: BasePIELM,
     example_input: torch.Tensor | None,
     input_dim: int,
 ) -> torch.Tensor:
@@ -28,7 +28,7 @@ def _make_example_input(
 
 
 def to_onnx(
-    model: "BasePIELM",
+    model: BasePIELM,
     path: str | Path,
     *,
     example_input: torch.Tensor | None = None,
@@ -72,7 +72,7 @@ def to_onnx(
 
 
 def to_torchscript(
-    model: "BasePIELM",
+    model: BasePIELM,
     path: str | Path,
     *,
     example_input: torch.Tensor | None = None,

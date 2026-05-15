@@ -22,7 +22,7 @@ from pypielm.core.base import (
     _stack_blocks,
 )
 from pypielm.core.feature_maps import FourierFeatureMap, FrequencyInit
-from pypielm.core.solver import WeightedLinearSystem, ridge_solve, rrqr_solve
+from pypielm.core.solver import ridge_solve, rrqr_solve
 from pypielm.models.registry import register
 from pypielm.models.vanilla import _collect_blocks  # reuse block-collection logic
 
@@ -111,13 +111,13 @@ class GFFPIELM(BasePIELM):
 
     def fit(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         *,
         pde_operator: Any | None = None,
         bcs: list[Any] | None = None,
         ics: list[Any] | None = None,
         collocation_sampler: Any | None = None,
-    ) -> "GFFPIELM":
+    ) -> GFFPIELM:
         input_dim = dataset.X_colloc.shape[1]
         if self._fm is None or self._fm.input_dim != input_dim:
             self._fm = self._build_fm(input_dim)

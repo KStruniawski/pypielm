@@ -99,13 +99,13 @@ class BayesianPIELM(BasePIELM):
 
     def fit(
         self,
-        dataset: "PIELMDataset",
+        dataset: PIELMDataset,
         *,
         pde_operator: Any | None = None,
         bcs: list[Any] | None = None,
         ics: list[Any] | None = None,
         collocation_sampler: Any | None = None,
-    ) -> "BayesianPIELM":
+    ) -> BayesianPIELM:
         input_dim = dataset.X_colloc.shape[1]
         if self._fm is None or self._fm.input_dim != input_dim:
             self._fm = self._build_fm(input_dim)

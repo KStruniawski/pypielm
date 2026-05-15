@@ -16,7 +16,6 @@ from __future__ import annotations
 import csv
 import sys
 from pathlib import Path
-from typing import Iterator
 
 import numpy as np
 import pytest
@@ -26,8 +25,8 @@ import torch.utils.data
 from pypielm.data import (
     CSVAdapter,
     FeatureExpander,
-    NPZAdapter,
     Normalizer,
+    NPZAdapter,
     PDEBenchAdapter,
     PIELMDataset,
     PINNacleAdapter,
@@ -35,7 +34,6 @@ from pypielm.data import (
     TorchDatasetAdapter,
     auto_load,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers

@@ -9,11 +9,10 @@ Public API::
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 import torch
-
 
 # ---------------------------------------------------------------------------
 # Domain descriptors
@@ -135,7 +134,8 @@ class LHSSampler:
         n = self.n_points
 
         try:
-            from scipy.stats.qmc import LatinHypercube, scale as qmc_scale
+            from scipy.stats.qmc import LatinHypercube
+            from scipy.stats.qmc import scale as qmc_scale
             sampler = LatinHypercube(d=d, seed=self.seed)
             unit_sample = sampler.random(n=n)  # (n, d) in [0, 1)
             scaled = qmc_scale(unit_sample, lb, ub)

@@ -225,8 +225,9 @@ class TestAnalyticLaplacian:
         We compare column-by-column using the feature-map's analytic Laplacian
         against applying the scalar autograd laplacian to each output neuron.
         """
-        from pypielm.pde.operators import AnalyticLaplacian, laplacian as autograd_lap
         from pypielm.core.feature_maps import FourierFeatureMap
+        from pypielm.pde.operators import AnalyticLaplacian
+        from pypielm.pde.operators import laplacian as autograd_lap
 
         fm = FourierFeatureMap(input_dim=2, hidden_dim=32, freq_max=10.0, seed=7)
         X_raw = _make_2d_grid(6, requires_grad=False)
@@ -257,8 +258,8 @@ class TestAnalyticLaplacian:
             al(X)
 
     def test_analytic_laplacian_shape(self):
-        from pypielm.pde.operators import AnalyticLaplacian
         from pypielm.core.feature_maps import FourierFeatureMap
+        from pypielm.pde.operators import AnalyticLaplacian
         fm = FourierFeatureMap(input_dim=2, hidden_dim=32, freq_max=10.0, seed=0)
         al = AnalyticLaplacian(feature_map=fm)
         X = _make_2d_grid(5, requires_grad=False)
@@ -356,6 +357,7 @@ class TestLHSSampler:
         """Each marginal of LHS should look uniform: KS stat < 0.15."""
         pytest.importorskip("scipy")
         from scipy.stats import kstest
+
         from pypielm.pde.collocation import BoxDomain, LHSSampler
         dom = BoxDomain([0.0, 0.0], [1.0, 1.0])
         pts = LHSSampler(dom, n_points=500, seed=42).sample().numpy()
@@ -372,14 +374,15 @@ class TestLHSSampler:
 
 class TestAdaptiveSampler:
     def test_shape(self):
-        from pypielm.pde.collocation import BoxDomain, AdaptiveSampler
+        from pypielm.pde.collocation import AdaptiveSampler, BoxDomain
         dom = BoxDomain([0.0, 0.0], [1.0, 1.0])
-        residual_fn = lambda X: (X[:, 0] - 0.5) ** 2 + (X[:, 1] - 0.5) ** 2
+        def residual_fn(X):
+            return (X[:, 0] - 0.5) ** 2 + (X[:, 1] - 0.5) ** 2
         pts = AdaptiveSampler(dom, residual_fn, n_points=100).sample()
         assert pts.shape == (100, 2)
 
     def test_respects_n_points(self):
-        from pypielm.pde.collocation import BoxDomain, AdaptiveSampler
+        from pypielm.pde.collocation import AdaptiveSampler, BoxDomain
         dom = BoxDomain([0.0], [1.0])
         for n in [50, 200]:
             pts = AdaptiveSampler(
@@ -388,14 +391,14 @@ class TestAdaptiveSampler:
             assert pts.shape[0] == n
 
     def test_within_domain(self):
-        from pypielm.pde.collocation import BoxDomain, AdaptiveSampler
+        from pypielm.pde.collocation import AdaptiveSampler, BoxDomain
         dom = BoxDomain([-1.0, -1.0], [1.0, 1.0])
         pts = AdaptiveSampler(dom, lambda X: X.abs().sum(1), n_points=80).sample()
         assert (pts[:, 0] >= -1.0).all()
         assert (pts[:, 0] <= 1.0).all()
 
     def test_invalid_refine_ratio_raises(self):
-        from pypielm.pde.collocation import BoxDomain, AdaptiveSampler
+        from pypielm.pde.collocation import AdaptiveSampler, BoxDomain
         dom = BoxDomain([0.0], [1.0])
         with pytest.raises(ValueError):
             AdaptiveSampler(dom, lambda X: X[:, 0], refine_ratio=0.0)
@@ -404,7 +407,7 @@ class TestAdaptiveSampler:
 
     def test_concentrates_near_high_residual(self):
         """Adaptive sampler should concentrate points near x=1 for residual=x."""
-        from pypielm.pde.collocation import BoxDomain, AdaptiveSampler
+        from pypielm.pde.collocation import AdaptiveSampler, BoxDomain
         dom = BoxDomain([0.0], [1.0])
         # residual peaks near x=1
         pts = AdaptiveSampler(
@@ -529,7 +532,8 @@ class TestNeumannBC:
 
     def test_weight(self, fm2d, bc_pts_2d):
         from pypielm.pde.constraints import NeumannBC
-        normal = torch.zeros_like(bc_pts_2d); normal[:, 1] = 1.0
+        normal = torch.zeros_like(bc_pts_2d)
+        normal[:, 1] = 1.0
         bc = NeumannBC(lambda x: x[:, 0:1], normal, bc_pts_2d, weight=2.5)
         wls = bc.assemble(fm2d)
         assert wls.weight == pytest.approx(2.5)
@@ -554,7 +558,8 @@ class TestInitialCondition:
     def test_y_from_ic_fn(self, fm2d):
         from pypielm.pde.constraints import InitialCondition
         pts = torch.rand(8, 2, dtype=torch.float64)
-        ic_fn = lambda x: torch.sin(x[:, 0:1])
+        def ic_fn(x):
+            return torch.sin(x[:, 0:1])
         ic = InitialCondition(ic_fn, pts)
         wls = ic.assemble(fm2d)
         assert torch.allclose(wls.y, torch.sin(pts[:, 0:1]))
@@ -571,8 +576,10 @@ class TestPeriodicBC:
     def test_shape(self, fm2d):
         from pypielm.pde.constraints import PeriodicBC
         n = 12
-        pts_l = torch.rand(n, 2, dtype=torch.float64); pts_l[:, 0] = 0.0
-        pts_r = pts_l.clone(); pts_r[:, 0] = 1.0
+        pts_l = torch.rand(n, 2, dtype=torch.float64)
+        pts_l[:, 0] = 0.0
+        pts_r = pts_l.clone()
+        pts_r[:, 0] = 1.0
         bc = PeriodicBC(axis=0, points_left=pts_l, points_right=pts_r)
         wls = bc.assemble(fm2d)
         assert wls.H.shape == (n, 32)
@@ -581,8 +588,10 @@ class TestPeriodicBC:
     def test_y_is_zeros(self, fm2d):
         from pypielm.pde.constraints import PeriodicBC
         n = 8
-        pts_l = torch.rand(n, 2, dtype=torch.float64); pts_l[:, 0] = 0.0
-        pts_r = pts_l.clone(); pts_r[:, 0] = 1.0
+        pts_l = torch.rand(n, 2, dtype=torch.float64)
+        pts_l[:, 0] = 0.0
+        pts_r = pts_l.clone()
+        pts_r[:, 0] = 1.0
         bc = PeriodicBC(axis=0, points_left=pts_l, points_right=pts_r)
         wls = bc.assemble(fm2d)
         assert torch.allclose(wls.y, torch.zeros_like(wls.y))
@@ -590,8 +599,10 @@ class TestPeriodicBC:
     def test_H_is_difference(self, fm2d):
         from pypielm.pde.constraints import PeriodicBC
         n = 8
-        pts_l = torch.rand(n, 2, dtype=torch.float64); pts_l[:, 0] = 0.0
-        pts_r = pts_l.clone(); pts_r[:, 0] = 1.0
+        pts_l = torch.rand(n, 2, dtype=torch.float64)
+        pts_l[:, 0] = 0.0
+        pts_r = pts_l.clone()
+        pts_r[:, 0] = 1.0
         bc = PeriodicBC(axis=0, points_left=pts_l, points_right=pts_r)
         wls = bc.assemble(fm2d)
         expected = fm2d(pts_l) - fm2d(pts_r)

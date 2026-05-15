@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from pypielm.core.base import BasePIELM
 
 # Global registry mapping lowercase model name → class
-MODEL_REGISTRY: dict[str, type["BasePIELM"]] = {}
+MODEL_REGISTRY: dict[str, type[BasePIELM]] = {}
 
 
 def register(name: str):
@@ -38,7 +38,7 @@ def register(name: str):
     return _decorator
 
 
-def get_model(name: str, **kwargs: Any) -> "BasePIELM":
+def get_model(name: str, **kwargs: Any) -> BasePIELM:
     """Instantiate a registered model by name.
 
     Args:

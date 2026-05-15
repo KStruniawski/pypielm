@@ -10,7 +10,6 @@ from typing import Any
 
 import yaml
 
-
 # ---------------------------------------------------------------------------
 # Configuration dataclass
 # ---------------------------------------------------------------------------
@@ -189,7 +188,10 @@ def _resolve_sampler(pde: dict[str, Any]) -> Any:
     seed = pde.get("seed", 42)
 
     from pypielm.pde.collocation import (
-        BoxDomain, UniformSampler, LHSSampler, GridSampler,
+        BoxDomain,
+        GridSampler,
+        LHSSampler,
+        UniformSampler,
     )
 
     domain = BoxDomain(lb=lb, ub=ub)
@@ -200,7 +202,7 @@ def _resolve_sampler(pde: dict[str, Any]) -> Any:
         return LHSSampler(domain, n_points=n, seed=seed)
     if name == "GridSampler":
         nx = pde.get("nx", n)
-        ny = pde.get("ny", None)
+        ny = pde.get("ny")
         kw: dict[str, Any] = {"nx": nx}
         if ny is not None:
             kw["ny"] = ny
@@ -219,7 +221,9 @@ def _resolve_sampler(pde: dict[str, Any]) -> Any:
 def _load_dataset(config: ExperimentConfig) -> Any:
     """Load a :class:`~pypielm.data.PIELMDataset` from the data block."""
     import math
+
     import torch
+
     from pypielm.data import auto_load
     from pypielm.data.dataset import PIELMDataset
 
@@ -329,9 +333,10 @@ def run_experiment(config: ExperimentConfig) -> dict[str, Any]:
         * ``'artifacts'``: list of paths of saved files.
     """
     import torch
-    from pypielm.utils.reproducibility import seed_everything
-    from pypielm.models.registry import get_model
+
     from pypielm.metrics.metrics import MetricsBundle
+    from pypielm.models.registry import get_model
+    from pypielm.utils.reproducibility import seed_everything
 
     seed_everything(config.seed)
 

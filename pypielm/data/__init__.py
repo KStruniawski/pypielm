@@ -23,8 +23,6 @@ from typing import Any
 
 import torch
 
-from .dataset import PIELMDataset
-from .transforms import FeatureExpander, Normalizer, Pipeline
 from .adapters import (
     CSVAdapter,
     NPZAdapter,
@@ -32,6 +30,8 @@ from .adapters import (
     PINNacleAdapter,
     TorchDatasetAdapter,
 )
+from .dataset import PIELMDataset
+from .transforms import FeatureExpander, Normalizer, Pipeline
 
 
 def auto_load(

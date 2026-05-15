@@ -175,7 +175,7 @@ class AnalyticLaplacian:
 
     def __init__(
         self,
-        feature_map: "RandomFeatureMap | None" = None,
+        feature_map: RandomFeatureMap | None = None,
         input_dim: int | None = None,
     ) -> None:
         self.feature_map = feature_map

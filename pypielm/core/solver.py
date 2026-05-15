@@ -7,10 +7,9 @@ for numerically stable PDE solves.
 
 from __future__ import annotations
 
-from typing import Any, NamedTuple
+from typing import NamedTuple
 
 import torch
-
 
 # ---------------------------------------------------------------------------
 # Result containers

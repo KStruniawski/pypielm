@@ -9,7 +9,6 @@ import torch
 
 from pypielm.core.feature_maps import AutogradFeatureMap, FourierFeatureMap, RandomFeatureMap
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -406,7 +405,8 @@ class TestAutogradFeatureMap:
 
     def test_custom_activation(self):
         """AutogradFeatureMap works with an arbitrary smooth activation."""
-        act = lambda z: torch.sin(z) + 0.1 * torch.cos(2 * z)
+        def act(z):
+            return torch.sin(z) + 0.1 * torch.cos(2 * z)
         fm = AutogradFeatureMap(input_dim=2, hidden_dim=8, activation_fn=act, seed=0)
         X = make_X(5, 2)
         H = fm(X)

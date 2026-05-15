@@ -116,7 +116,7 @@ class _DomainDecompositionBase(BasePIELM):
         return _SubdomainModel(center=center, x_min=x_min, x_max=x_max,
                                beta=beta, fm=fm)
 
-    def fit(self, dataset: "PIELMDataset", **kwargs: Any) -> "_DomainDecompositionBase":
+    def fit(self, dataset: PIELMDataset, **kwargs: Any) -> _DomainDecompositionBase:
         X = dataset.X_data if dataset.X_data is not None else dataset.X_colloc
         y = dataset.y_data
         if y is None:
@@ -327,7 +327,7 @@ class DDELMCoarse(_DomainDecompositionBase):
         # Coarse global correction model
         self._coarse_sub: _SubdomainModel | None = None
 
-    def fit(self, dataset: "PIELMDataset", **kwargs: Any) -> "DDELMCoarse":
+    def fit(self, dataset: PIELMDataset, **kwargs: Any) -> DDELMCoarse:
         # Fit local subdomains
         super().fit(dataset, **kwargs)
 

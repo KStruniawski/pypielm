@@ -14,13 +14,6 @@ Public surface::
 
 from __future__ import annotations
 
-from .operators import (
-    AnalyticLaplacian,
-    advection_term,
-    divergence,
-    gradient,
-    laplacian,
-)
 from .collocation import (
     AdaptiveSampler,
     BoxDomain,
@@ -33,6 +26,13 @@ from .constraints import (
     InitialCondition,
     NeumannBC,
     PeriodicBC,
+)
+from .operators import (
+    AnalyticLaplacian,
+    advection_term,
+    divergence,
+    gradient,
+    laplacian,
 )
 
 __all__ = [

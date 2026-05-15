@@ -15,7 +15,6 @@ from typing import Any
 import numpy as np
 import torch
 
-
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
@@ -294,7 +293,7 @@ def plot_pareto(
     labels = [str(r[label_key]) for r in results]
 
     ax.scatter(xs, ys, zorder=3)
-    for xi, yi, lbl in zip(xs, ys, labels):
+    for xi, yi, lbl in zip(xs, ys, labels, strict=False):
         ax.annotate(lbl, (xi, yi), textcoords="offset points",
                     xytext=(5, 3), fontsize=8)
 
