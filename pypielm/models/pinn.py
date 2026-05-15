@@ -819,6 +819,8 @@ class FourierPINN(VanillaPINN):
         # Wrap inner MLP in a proper nn.Module that registers it as a child
         # so that parameters() is non-empty.
         class _FourierNetModule(nn.Module):
+            B: torch.Tensor  # register_buffer — declare for mypy
+
             def __init__(self, inner: nn.Module, B: Tensor) -> None:
                 super().__init__()
                 self.inner = inner
@@ -901,7 +903,7 @@ class _MuonOptimizer(torch.optim.Optimizer):
         return X
 
     @torch.no_grad()
-    def step(self, closure: Any = None) -> float | None:
+    def step(self, closure: Any = None) -> float | None:  # type: ignore[override]
         loss = None
         if closure is not None:
             with torch.enable_grad():

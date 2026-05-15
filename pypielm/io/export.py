@@ -62,7 +62,7 @@ def to_onnx(
 
     torch.onnx.export(
         model,
-        x,
+        (x,),
         str(path),
         opset_version=opset_version,
         input_names=["X"],
