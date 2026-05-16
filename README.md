@@ -1,6 +1,7 @@
 # PyPIELM
 
 **A Unified and Reproducible Framework for Physics-Informed Extreme Learning Machines**
+
 [![Documentation](https://readthedocs.org/projects/pypielm/badge/?version=latest)](https://pypielm.readthedocs.io/en/latest/)
 [![CI](https://github.com/KStruniawski/pypielm/actions/workflows/ci.yml/badge.svg)](https://github.com/KStruniawski/pypielm/actions/workflows/ci.yml)
 [![Coverage](https://codecov.io/gh/KStruniawski/pypielm/branch/main/graph/badge.svg)](https://codecov.io/gh/KStruniawski/pypielm)
