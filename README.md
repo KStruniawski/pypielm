@@ -7,7 +7,7 @@
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://python.org)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange)](https://pytorch.org)
 [![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg)](LICENSE.md)
-
+[![DOI](https://zenodo.org/badge/1239690772.svg)](https://doi.org/10.5281/zenodo.20232634)
 ---
 
 ## Overview
@@ -85,6 +85,7 @@ If you use PyPIELM in your research, please cite:
              Physics-Informed Extreme Learning Machines},
   year    = {2026},
   url     = {https://github.com/KStruniawski/pypielm},
+  doi = {10.5281/zenodo.20232634}
 }
 ```
 
