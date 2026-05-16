@@ -93,9 +93,16 @@ If you use PyPIELM in your research, please cite:
 
 ---
 
-## Related
+## Interactive Web App
 
-- **PyPIELM App** — Streamlit web UI for training, benchmarking and exporting models: [github.com/KStruniawski/pypielm-app](https://github.com/KStruniawski/pypielm-app)
+PyPIELM ships with a [Streamlit web frontend](https://github.com/KStruniawski/pypielm-app) — no coding required.
+Train models, run benchmarks, and export results directly in your browser:
+
+[![Open PyPIELM App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://pypielm-app.streamlit.app)
+
+[![App preview — Train Model page](https://github.com/KStruniawski/pypielm-app/raw/main/screenshots/train_results.png)](https://pypielm-app.streamlit.app)
+
+> Click the screenshot or the badge to open the live app.
 
 ---
 
